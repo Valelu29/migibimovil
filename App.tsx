@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { useFonts } from 'expo-font';
+import { Button, Provider, Toast } from '@ant-design/react-native';
+import Omg from './omg';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null; 
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider>
+      <Omg />
+      <Button onPress={() => Toast.info('Este es un mensaje de prueba')}>Empezar</Button>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
