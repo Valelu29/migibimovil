@@ -24,7 +24,7 @@ export default () => (
     </Button>
     <WhiteSpace />
 
-    <Button loading>loading button</Button>
+   
 
     <Button activeStyle={false}>无点击反馈</Button>
     <WhiteSpace />
