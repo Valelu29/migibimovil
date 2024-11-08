@@ -1,57 +1,59 @@
-import React from 'react'
-import { Button, Icon, WhiteSpace, WingBlank } from '@ant-design/react-native'
+// omg.tsx
+import React from 'react';
+import { Button, Icon, WhiteSpace, WingBlank } from '@ant-design/react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from './types';
+import { RouteProp } from '@react-navigation/native';
 
-/* tslint:disable:no-console */
-export default () => (
-  <WingBlank>
-    <WhiteSpace />
-    <Button>default</Button>
-    <WhiteSpace />
-    <Button disabled>default disabled</Button>
-    <WhiteSpace />
+type OmgScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Omg'>;
 
-    <Button type="primary">primary</Button>
-    <WhiteSpace />
-    <Button type="primary" disabled>
-      primary disabled
-    </Button>
-    <WhiteSpace />
+type Props = {
+  navigation: OmgScreenNavigationProp;
+  route: RouteProp<RootStackParamList, 'Omg'>;
+};
 
-    <Button type="warning">warning</Button>
-    <WhiteSpace />
-    <Button type="warning" disabled>
-      warning disabled
-    </Button>
-    <WhiteSpace />
+export default function Omg({ navigation, route }: Props) {
+  return (
+    <WingBlank>
+      <WhiteSpace />
+      <Button onPress={() => navigation.navigate('Plan')}>Ir a Plan</Button>
+      <WhiteSpace />
 
-    <Button loading>loading button</Button>
-
-    <Button activeStyle={false}>无点击反馈</Button>
-    <WhiteSpace />
-    <Button activeStyle={{ backgroundColor: 'red' }}>
-      custom feedback style
-    </Button>
-    <WhiteSpace />
-
-    <WingBlank
-      style={{
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-      <Button type="ghost">ghost</Button>
-      <Button type="ghost" disabled>
-        ghost disabled
+      <Button type="primary" onPress={() => navigation.navigate('Plan')}>
+        primary (Ir a Plan)
       </Button>
-      <Button type="ghost" size="small">
-        ghost
+      <WhiteSpace />
+
+      {/* Resto de botones */}
+      <Button type="warning">warning</Button>
+      <WhiteSpace />
+
+      <Button loading>loading button</Button>
+      <WhiteSpace />
+
+      <Button activeStyle={{ backgroundColor: 'red' }}>
+        custom feedback style
+      </Button>
+      <WhiteSpace />
+
+      <WingBlank
+        style={{
+          marginTop: 20,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Button type="ghost">ghost</Button>
+        <Button type="ghost" size="small">
+          ghost
+        </Button>
+      </WingBlank>
+      <WhiteSpace />
+
+      <Button type="primary">
+        <Icon name="login" />
       </Button>
     </WingBlank>
-    <WhiteSpace />
-
-    <Button type="primary">
-      <Icon name="login" />
-    </Button>
-  </WingBlank>
-)
+  );
+}
