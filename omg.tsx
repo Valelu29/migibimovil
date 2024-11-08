@@ -19,31 +19,30 @@ export default function Omg({ navigation, route }: Props) {
       <Button onPress={() => navigation.navigate('Plan')}>Ir a Plan</Button>
       <WhiteSpace />
 
-<<<<<<< HEAD
       <Button type="primary" onPress={() => navigation.navigate('Plan')}>
-        primary (Ir a Plan)
-=======
-   
+    primary (Ir a Plan)
+</Button>
 
-    <Button activeStyle={false}>无点击反馈</Button>
-    <WhiteSpace />
-    <Button activeStyle={{ backgroundColor: 'red' }}>
-      custom feedback style
-    </Button>
-    <WhiteSpace />
+<Button activeStyle={false}>无点击反馈</Button>
+<WhiteSpace />
+<Button activeStyle={{ backgroundColor: 'red' }}>
+    custom feedback style
+</Button>
+<WhiteSpace />
 
-    <WingBlank
-      style={{
+<WingBlank
+    style={{
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-      }}>
-      <Button type="ghost">ghost</Button>
-      <Button type="ghost" disabled>
+    }}>
+    <Button type="ghost">ghost</Button>
+    <Button type="ghost" disabled>
         ghost disabled
->>>>>>> bc1fe49141ec448dc587bb068f002b66aeab40ea
-      </Button>
+    </Button>
+</WingBlank>
+
       <WhiteSpace />
 
       {/* Resto de botones */}
