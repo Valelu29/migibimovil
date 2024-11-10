@@ -1,9 +1,8 @@
-// omg.tsx
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Button, Icon, WhiteSpace, WingBlank } from '@ant-design/react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 
 type OmgScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Omg'>;
 
@@ -13,6 +12,15 @@ type Props = {
 };
 
 export default function Omg({ navigation, route }: Props) {
+  const nav = useNavigation<OmgScreenNavigationProp>();
+
+  // Cambiar el color de la flecha al montar el componente
+  useLayoutEffect(() => {
+    nav.setOptions({
+      headerTintColor: '#40632F', // Color de la flecha
+    });
+  }, [nav]);
+
   return (
     <WingBlank>
       <WhiteSpace />
@@ -20,33 +28,32 @@ export default function Omg({ navigation, route }: Props) {
       <WhiteSpace />
 
       <Button type="primary" onPress={() => navigation.navigate('Plan')}>
-    primary (Ir a Plan)
-</Button>
+        primary (Ir a Plan)
+      </Button>
 
-<Button activeStyle={false}>无点击反馈</Button>
-<WhiteSpace />
-<Button activeStyle={{ backgroundColor: 'red' }}>
-    custom feedback style
-</Button>
-<WhiteSpace />
+      <Button activeStyle={false} onPress={() => navigation.navigate('Perfil')} >ir a picker</Button>
+      <WhiteSpace />
+      <Button activeStyle={{ backgroundColor: 'red' }}>
+        custom feedback style
+      </Button>
+      <WhiteSpace />
 
-<WingBlank
-    style={{
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    }}>
-    <Button type="ghost">ghost</Button>
-    <Button type="ghost" disabled>
-        ghost disabled
-    </Button>
-</WingBlank>
+      <WingBlank
+          style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+          }}>
+          <Button type="ghost">ghost</Button>
+          <Button type="ghost" disabled>
+              ghost disabled
+          </Button>
+      </WingBlank>
 
       <WhiteSpace />
 
-      {/* Resto de botones */}
-      <Button type="warning">warning</Button>
+      <Button type="warning" onPress={() => navigation.navigate('Reg')} >warning</Button>
       <WhiteSpace />
 
       <Button loading>loading button</Button>
@@ -58,17 +65,17 @@ export default function Omg({ navigation, route }: Props) {
       <WhiteSpace />
 
       <WingBlank
-        style={{
-          marginTop: 20,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
+          style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+          }}
       >
-        <Button type="ghost">ghost</Button>
-        <Button type="ghost" size="small">
-          ghost
-        </Button>
+          <Button type="ghost">ghost</Button>
+          <Button type="ghost" size="small">
+            ghost
+          </Button>
       </WingBlank>
       <WhiteSpace />
 
@@ -76,5 +83,5 @@ export default function Omg({ navigation, route }: Props) {
         <Icon name="login" />
       </Button>
     </WingBlank>
-  );
+  );
 }
