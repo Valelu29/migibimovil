@@ -3,13 +3,18 @@ import { Modal, StyleSheet, Text, Pressable, View, Image, TextInput, ScrollView 
 import { Button, Provider } from '@ant-design/react-native';
 import { Calendar } from 'react-native-calendars';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './types';
+
+
+type PlanScreenNavigationProp = NavigationProp<RootStackParamList, 'Plan'>;
 
 export default function Plan() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
+  const [selectedPorDate, setSelectedPorDate] = useState<string | undefined>(undefined); // Fecha para "Por"
   const [showCalendar, setShowCalendar] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<PlanScreenNavigationProp>();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('option1');
   const [items, setItems] = useState([
@@ -19,6 +24,50 @@ export default function Plan() {
   ]);
   const [porciones, setPorciones] = useState('');  // Estado para el valor de las porciones
 
+  const navigateToScreen = (screenName: keyof RootStackParamList) => {
+    navigation.navigate(screenName);
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitleVisible: true, // Mantiene el botón de regresar visible
+      headerTintColor: '#40632F',
+      headerTitle: '', // Oculta el título de "Plan"
+      headerStyle: {
+        height: 150, // Aumenta la altura de la cabecera a 100
+      },
+      headerRight: () => (
+        <View style={sHead.headerButtonsContainer}>
+          
+          <View style={sHead.naveAl}  >
+          <Pressable onPress={() => navigateToScreen('Hoy')} >
+            <Image source={require('./img/bHoy1.png')} style={sHead.headerIcon} />
+          </Pressable>
+          <Pressable onPress={() => navigateToScreen('Plan')}>
+            <Image source={require('./img/bPlan2.png')} style={sHead.headerIcon} />
+          </Pressable>
+          <Pressable onPress={() => navigateToScreen('Recetas')}>
+            <Image source={require('./img/bRecetas1.png')} style={sHead.headerIcon} />
+          </Pressable>
+          <Pressable onPress={() => navigateToScreen('Refri')}>
+            <Image source={require('./img/bRefri1.png')} style={sHead.headerIcon} />
+          </Pressable>
+          </View>
+
+          <Pressable onPress={() => navigateToScreen('Perfil')} style={sHead.headerIconEs} >
+            <Image source={require('./img/bPerfil.png')} style={sHead.headerIcon2} />
+          </Pressable>
+          
+        </View>
+        
+        
+      ),
+    });
+  }, [navigation]);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   // Estados para controlar si cada botón ha sido presionado
   const [selectedButtons, setSelectedButtons] = useState({
     faltante: false,
@@ -33,12 +82,12 @@ export default function Plan() {
     setShowCalendar(false);
   };
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerBackTitleVisible: false,
-      headerTintColor: '#40632F',
-    });
-  }, [navigation]);
+  const onPorDayPress = (day: any) => {
+    setSelectedPorDate(day.dateString);
+    setShowCalendar(false);
+  };
+
+  
 
   const markedDates = selectedDate
     ? {
@@ -46,9 +95,13 @@ export default function Plan() {
       }
     : {};
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+  const markedPorDates = selectedPorDate
+    ? {
+        [selectedPorDate]: { selected: true, selectedColor: '#CEDFAD' },
+      }
+    : {};
+
+  
 
   // Función para manejar el cambio de imagen al presionar un botón
   const handlePress = (button: keyof typeof selectedButtons) => {
@@ -85,8 +138,10 @@ export default function Plan() {
                 <Text style={styles.selectedDateText}>
                   {selectedDate ? selectedDate : 'No seleccionada'}
                 </Text>
-                <Button type="primary" onPress={() => setShowCalendar(true)} style={styles.selectButton}>
-                  Seleccionar
+                <Button onPress={() => setShowCalendar(true)} style={bIn.selectButton}>
+                  <Image
+                    source={require('./img/CalenIcon.png')} 
+                  />
                 </Button>
               </View>
 
@@ -139,71 +194,208 @@ export default function Plan() {
         </Modal>
 
         {/* Botones Horizontales */}
-        <View style={styles.botonesIn}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-            <Pressable style={styles.button} onPress={() => handlePress('faltante')}>
+        <View style={bIn.botonesIn}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={bIn.scrollContainer}>
+            <Pressable style={bIn.button} onPress={() => handlePress('faltante')}>
               <Image
                 source={selectedButtons.faltante ? require('./img/biFal2.png') : require('./img/biFal.png')}
-                style={styles.imgbi}
+                style={bIn.imgbi}
               />
-              <Text style={styles.textbi} >Faltante</Text>
+              <Text style={bIn.textbi} >Faltante</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => handlePress('caducar')}>
+            <Pressable style={bIn.button} onPress={() => handlePress('caducar')}>
               <Image
                 source={selectedButtons.caducar ? require('./img/biCa2.png') : require('./img/biCa.png')}
-                style={styles.imgbi}
+                style={bIn.imgbi}
               />
-              <Text style={styles.textbi}>Caducar</Text>
+              <Text style={bIn.textbi}>Caducar</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => handlePress('desayuno')}>
+            <Pressable style={bIn.button} onPress={() => handlePress('desayuno')}>
               <Image
                 source={selectedButtons.desayuno ? require('./img/biDes2.png') : require('./img/biDes.png')}
-                style={styles.imgbi}
+                style={bIn.imgbi}
               />
-              <Text style={styles.textbi}>Desayuno</Text>
+              <Text style={bIn.textbi}>Desayuno</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => handlePress('comida')}>
+            <Pressable style={bIn.button} onPress={() => handlePress('comida')}>
               <Image
                 source={selectedButtons.comida ? require('./img/biCom2.png') : require('./img/biCom.png')}
-                style={styles.imgbi}
+                style={bIn.imgbi}
               />
-              <Text style={styles.textbi}>Comida</Text>
+              <Text style={bIn.textbi}>Comida</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => handlePress('cena')}>
+            <Pressable style={bIn.button} onPress={() => handlePress('cena')}>
               <Image
                 source={selectedButtons.cena ? require('./img/biCe2.png') : require('./img/biCe.png')}
-                style={styles.imgbi}
+                style={bIn.imgbi}
               />
-              <Text style={styles.textbi}>Cena</Text>
+              <Text style={bIn.textbi}>Cena</Text>
             </Pressable>
           </ScrollView>
         </View>
 
         <View>
-          <Pressable>
-              <Image  
-                source={require('./img/bComp.png')}
+          <View style={bIn.scrollContainer}>
+            <Pressable>
+              <Image
+                source={require('./img/fIzq.png') }
+                style={bIn.imgbi}
               />
+            </Pressable>
+            <Text style={styles.selectedDateText}>
+              {selectedDate ? selectedDate : 'Jueves 4 de Noviembre'}
+            </Text>
+            <Pressable onPress={() => setShowCalendar(true)} style={bIn.selectButton}>
+              <Text>Por</Text>
+            </Pressable>
+            <Pressable>
+              <Image
+                source={require('./img/fDerecha.png') }
+                style={bIn.imgbi}
+              />
+            </Pressable>
+          </View>
+
+          {/* Calendario flotante */}
+          {showCalendar && (
+            <View style={styles.calendarContainer}>
+              <Calendar
+                onDayPress={onPorDayPress}
+                markedDates={markedPorDates}
+                theme={{
+                  selectedDayBackgroundColor: '#3E7E1E',
+                  todayTextColor: '#CEDFAD',
+                  dayTextColor: '#3E7E1E',
+                  arrowColor: '#3E7E1E',
+                  monthTextColor: '#3E7E1E',
+                  textSectionTitleColor: '#9FAF7D',
+                }}
+              />
+            </View>
+          )}
+        </View>
+
+        <View style={styles.botAbajo} >
+          <Pressable style={styBA.botAbS} >
+            <Image  
+              source={require('./img/bComp.png')}
+              style={styBA.imgbA}
+            />
           </Pressable>
-          <Pressable>
-              <Image  
-                source={require('./img/bDesc.png')}
-              />
+          <Pressable style={styBA.botAbS} >
+            <Image  
+              source={require('./img/bDesc.png')}
+              style={styBA.imgbA}
+            />
           </Pressable>
-          <Pressable>
-              <Image  
-                source={require('./img/bV2.png')}
-              />
+          <Pressable style={styBA.botAbS2}>
+            <Image  
+              source={require('./img/bV2.png')}
+              style={styBA.imgbA}
+            />
           </Pressable>
         </View>
 
         <Pressable style={styles.bottomBar} onPress={toggleModal}>
-          <Image source={require('./img/MasIcon.png')} />
+          <Image source={require('./img/MasIcon.png')}  />
         </Pressable>
       </View>
     </Provider>
   );
 }
+
+const sHead = StyleSheet.create({
+  headerButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  headerIcon: {
+    width: 69,
+    height: 56,
+    marginHorizontal: 5,
+    resizeMode: 'contain',
+    left:4,
+  },
+  headerIcon2: {
+    width: 72,
+    height: 67,
+    marginHorizontal: 5,
+    resizeMode: 'contain',
+    left:20,
+  },
+  headerIconEs: {
+    position: 'absolute',
+    zIndex: 10,
+    marginHorizontal: 5,
+    right: 10,
+    bottom: -65,
+  },
+
+  naveAl: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+    backgroundColor: '#9FAF7D',
+    position: 'absolute',
+    right: -28,
+    top: 24,
+    width: 420,
+  }
+})
+
+const bIn = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  imgbi: {
+    width: 66,
+    height: 66,
+  },
+  textbi: {
+    fontFamily: 'Jomhuria',
+    fontSize: 25,
+    color: '#6B8762',
+  },
+  botonesIn: {
+    marginTop: 20,
+    width: '100%',
+    bottom: 220,
+    position: 'relative',
+  },
+  scrollContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  selectButton: {
+    marginLeft: 10,
+  },
+})
+
+const PlanS = StyleSheet.create({
+
+}) 
+
+const styBA = StyleSheet.create({
+  botAbS:{
+    marginRight: 5, 
+    marginLeft:5,
+    right:66,
+    top: 190,
+  },
+  botAbS2:{
+    marginRight: 10, 
+    marginLeft:40,
+    left:70,
+    top: 190,
+  },
+  imgbA: {
+    width: 59,
+    height: 44,
+  }
+})
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -255,13 +447,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     top: 15,
   },
+  botAbajo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+  
   dateText: {
     fontSize: 16,
     color: '#333',
   },
-  selectButton: {
-    marginLeft: 10,
-  },
+  
   bottomBar: {
     backgroundColor: '#CEDFAC',
     height: 40,
@@ -273,17 +469,21 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
+  calendarContainer: {
+    position: 'absolute',
+    top: 70,
+    zIndex: 1000,
+    right: 10,
+    backgroundColor: 'white',
+    paddingTop: 10,
+  },
   bottomBarText: {
     color: 'white',
     fontWeight: 'bold',
   },
-  calendarContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    top: 10,
-    width: '100%',
-  },
+  
+  
+  
   closeButtonContainer: {
     position: 'absolute',
     top: 20,
@@ -323,6 +523,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+  
   input: {
     width: '60%',
     height: 40,
@@ -332,28 +533,5 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginTop: 10,
   },
-  botonesIn: {
-    marginTop: 20,
-    width: '100%',
-    bottom: 210,
-    position: 'relative',
-  },
-  scrollContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  button: {
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  imgbi: {
-    width: 66,
-    height: 66,
-  },
-  textbi: {
-    fontFamily: 'Jomhuria',
-    fontSize: 25,
-    color: '#6B8762',
-  }
+  
 });

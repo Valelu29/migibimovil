@@ -4,5 +4,8 @@ export type RootStackParamList = {
     Plan: undefined;
     Perfil: undefined;
     Reg: undefined;
+    Hoy: undefined;
+    Recetas: undefined;
+    Refri: undefined;
   };
   

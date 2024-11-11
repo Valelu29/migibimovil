@@ -1,108 +1,62 @@
-import React, { useState } from 'react';
-import { Button, Provider } from '@ant-design/react-native';
-import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Calendar } from 'react-native-calendars';
 
-export default function Plan() {
-  const [modalVisible, setModalVisible] = useState(false);
+const EjemploCalendarioPersonalizado = () => {
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
+  const [showCalendar, setShowCalendar] = useState(false); // Estado para mostrar/ocultar el calendario
+  const navigation = useNavigation();
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
+  // Configuración de la barra de navegación
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerTintColor: '#40632F',
+    });
+  }, [navigation]);
+
+  const onDayPress = (day: any) => {
+    setSelectedDate(day.dateString);
+    setShowCalendar(false); // Ocultar el calendario al seleccionar una fecha
   };
 
-  return (
-    <Provider>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={toggleModal}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <View style={styles.dragIndicator} />
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={toggleModal}
-              >
-                <Text style={styles.textStyle}>Close Panel</Text> 
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+  // Si selectedDate está definido, lo usamos; de lo contrario, pasamos un objeto vacío.
+  const markedDates = selectedDate ? {
+    [selectedDate]: { selected: true, selectedColor: '#CEDFAD' }, // Selección con color #3E7E1E
+  } : {};
 
-        <Pressable style={styles.bottomBar} onPress={toggleModal}>
-          <Text style={styles.bottomBarText}>Agregar</Text>
-        </Pressable>
-      </View>
-    </Provider>
+  return (
+    <View style={styles.container}>
+      <Button title="Seleccionar Fecha" onPress={() => setShowCalendar(true)} />
+      
+      {showCalendar && (
+        <Calendar
+          onDayPress={onDayPress}
+          markedDates={markedDates}
+          theme={{
+            selectedDayBackgroundColor: '#3E7E1E', // Color de selección
+            todayTextColor: '#CEDFAD', // Color de la fecha de hoy
+            dayTextColor: '#3E7E1E', // Color de los días del calendario
+            arrowColor: '#3E7E1E', // Color de las flechas de navegación
+            monthTextColor: '#3E7E1E', // Color del mes en la cabecera
+            textSectionTitleColor: '#9FAF7D', // Color del título de la sección
+          }}
+        />
+      )}
+
+      {selectedDate && <Text>Fecha seleccionada: {selectedDate}</Text>}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  centeredView: {
+  container: {
     flex: 1,
+    marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    paddingBottom: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  dragIndicator: {
-    width: 40,
-    height: 5,
-    backgroundColor: '#ccc',
-    borderRadius: 3,
-    marginBottom: 15,
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 20,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  bottomBar: {
-    backgroundColor: '#F194FF',
-    height: 50,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 0,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  bottomBarText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
   },
 });
+
+export default EjemploCalendarioPersonalizado;
