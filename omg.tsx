@@ -82,6 +82,12 @@ export default function Omg({ navigation, route }: Props) {
       <Button type="primary">
         <Icon name="login" />
       </Button>
+
+      {/* Botones para iniciar sesión y registrarse */}
+      <WhiteSpace />
+      <Button type="primary" onPress={() => navigation.navigate('Login')}>Iniciar sesión</Button>
+      <WhiteSpace />
+      <Button type="primary" onPress={() => navigation.navigate('Register')}>Registrarse</Button>
     </WingBlank>
-  );
+  );
 }

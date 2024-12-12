@@ -24,9 +24,10 @@ export default function Plan() {
   ]);
   const [porciones, setPorciones] = useState('');  // Estado para el valor de las porciones
 
-  const navigateToScreen = (screenName: keyof RootStackParamList) => {
+  const navigateToScreen = (screenName: "Plan" | "Hoy" | "Recetas" | "Refri" | "Perfil") => {
     navigation.navigate(screenName);
   };
+  
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -306,9 +307,11 @@ export default function Plan() {
 
 const sHead = StyleSheet.create({
   headerButtonsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
+    flexDirection: 'row', // Alinea los botones en una fila
+    justifyContent: 'space-evenly', // Espaciado uniforme entre botones
+    alignItems: 'center', // Centrado vertical de los botones
+    backgroundColor: '#D6E9C6', // Color de fondo del contenedor
+    paddingVertical: 10, // Espaciado vertical
   },
   headerIcon: {
     width: 69,
