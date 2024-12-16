@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';  // Importa RootStackParamList
@@ -19,12 +19,21 @@ interface Receta {
   Id_Usuario_Alta: number;
   Porciones: string;
 }
-// Tipado correcto del componente
+
+// Componente principal de Recetas
 const Recetas = ({ navigation }: RecetasProps) => {
   const [recipes, setRecipes] = useState<Receta[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // Estados para agregar recetas
+  const [nombre, setNombre] = useState('');
+  const [ingredientes, setIngredientes] = useState('');
+  const [procedimiento, setProcedimiento] = useState('');
+  const [porciones, setPorciones] = useState('');
+  const [tipo, setTipo] = useState('Postre');
+
+  // Obtener recetas
   const datosReceta = async () => {
     setLoading(true);
     try {
@@ -50,6 +59,7 @@ const Recetas = ({ navigation }: RecetasProps) => {
     }
   };
 
+  // Eliminar receta
   const eliminarReceta = async (id: number) => {
     try {
       await axios.delete(`${PUERTO}/recetaGeneral/${id}`);
@@ -57,6 +67,39 @@ const Recetas = ({ navigation }: RecetasProps) => {
       datosReceta();
     } catch (error) {
       Alert.alert('Error', 'No se pudo eliminar la receta.');
+    }
+  };
+
+  // Guardar nueva receta
+  const guardarReceta = async () => {
+    if (!nombre || !ingredientes || !procedimiento || !porciones) {
+      Alert.alert('Error', 'Todos los campos son obligatorios.');
+      return;
+    }
+
+    try {
+      const currentUser = localStorage.getItem('currentUser');
+      if (!currentUser) {
+        Alert.alert('Aviso', 'No hay un usuario logueado.');
+        return;
+      }
+
+      await axios.post(`${PUERTO}/recetaGeneral`, {
+        Nombre: nombre,
+        Ingredientes: ingredientes,
+        Procedimiento: procedimiento,
+        Porciones: porciones,
+        Tipo: tipo,
+        Id_Usuario_Alta: parseInt(currentUser, 10),
+      });
+      Alert.alert('Éxito', 'Receta agregada exitosamente.');
+      setNombre('');
+      setIngredientes('');
+      setProcedimiento('');
+      setPorciones('');
+      datosReceta();
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar la receta.');
     }
   };
 
@@ -76,7 +119,6 @@ const Recetas = ({ navigation }: RecetasProps) => {
       onDelete={() => eliminarReceta(item.Id_Receta)}
     />
   );
-  
 
   if (loading) {
     return (
@@ -88,7 +130,7 @@ const Recetas = ({ navigation }: RecetasProps) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar por nombre, calorías o tiempo"
@@ -102,13 +144,40 @@ const Recetas = ({ navigation }: RecetasProps) => {
         keyExtractor={item => item.Id_Receta.toString()}
         renderItem={renderRecipe}
       />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigation.navigate('AgregarReceta')}
-      >
-        <Text style={styles.addButtonText}>Agregar</Text>
+      
+      {/* Formulario para agregar recetas */}
+      <Text style={styles.sectionTitle}>Agregar Nueva Receta</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre de la receta"
+        value={nombre}
+        onChangeText={setNombre}
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Ingredientes"
+        value={ingredientes}
+        onChangeText={setIngredientes}
+        multiline
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Procedimiento"
+        value={procedimiento}
+        onChangeText={setProcedimiento}
+        multiline
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Porciones"
+        value={porciones}
+        onChangeText={setPorciones}
+        keyboardType="numeric"
+      />
+      <TouchableOpacity style={styles.addButton} onPress={guardarReceta}>
+        <Text style={styles.addButtonText}>Guardar Receta</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -126,6 +195,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 8,
   },
+  input: {
+    borderWidth: 1,
+    borderColor: '#A9A9A9',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+    backgroundColor: '#FFF',
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: '#A9A9A9',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+    backgroundColor: '#FFF',
+    height: 100,
+  },
   addButton: {
     backgroundColor: '#00b96b',
     padding: 16,
@@ -141,6 +227,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#556B2F',
   },
 });
 
